@@ -7,9 +7,15 @@
 ]]></content>
   </entry>
   <entry>
+    <title>Photo</title>
+    <url>/2020/04/28/Photo/</url>
+    <content><![CDATA[<p><img src="/2020/04/28/Photo/header-1588232948775.jpg" alt="图片"></p>
+]]></content>
+  </entry>
+  <entry>
     <title>MySQL-三</title>
     <url>/2020/04/30/MySQL_3/</url>
-    <content><![CDATA[<h1 id="笛卡尔积"><a href="#笛卡尔积" class="headerlink" title="笛卡尔积"></a>笛卡尔积</h1><h3 id="1-1-查询两张表"><a href="#1-1-查询两张表" class="headerlink" title="1.1 查询两张表"></a>1.1 查询两张表</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">* 功能</span><br><span class="line"> 	多张表查询时候,出现的状况</span><br></pre></td></tr></table></figure>
+    <content><![CDATA[<h1 id="笛卡尔积"><a href="#笛卡尔积" class="headerlink" title="笛卡尔积"></a>笛卡尔积</h1><h1 id="一、多表查询"><a href="#一、多表查询" class="headerlink" title="一、多表查询"></a>一、多表查询</h1><h3 id="1-1-查询两张表"><a href="#1-1-查询两张表" class="headerlink" title="1.1 查询两张表"></a>1.1 查询两张表</h3><figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">* </span>功能</span><br><span class="line"> 		多张表查询时候,会出现笛卡尔积(交叉连接)的情况</span><br><span class="line"><span class="bullet">* </span>语法</span><br><span class="line"><span class="code">		select ... from 左表,右表</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="1-2-内连接"><a href="#1-2-内连接" class="headerlink" title="1.2 内连接"></a>1.2 内连接</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">功能 </span><br><span class="line">	拿作表的记录去匹配由标的记录,若符合条件显示(两张表的较计)</span><br><span class="line">语法</span><br><span class="line">	1)隐式内连接</span><br><span class="line">	<span class="keyword">select</span> * <span class="keyword">from</span> 左表名 别名,右表名 别名 <span class="keyword">where</span> 别名.id = 别名.id</span><br><span class="line">	<span class="number">2</span>)显示内连接</span><br><span class="line">	<span class="keyword">select</span> * <span class="keyword">from</span> 左表名 别名 [<span class="keyword">INNER</span>] <span class="keyword">join</span> 右表名 别名 <span class="keyword">ON</span> 别名.id = 别名.id</span><br></pre></td></tr></table></figure>
 
@@ -24,11 +30,5 @@
       <tags>
         <tag>多表查询</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Photo</title>
-    <url>/2020/04/28/Photo/</url>
-    <content><![CDATA[<p><img src="/2020/04/28/Photo/header-1588232948775.jpg" alt="图片"></p>
-]]></content>
   </entry>
 </search>

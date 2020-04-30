@@ -88,14 +88,14 @@
 
 
 
-<meta name="description" content="笛卡尔积1.1 查询两张表12* 功能 	多张表查询时候,出现的状况  1.2 内连接1234567功能 	拿作表的记录去匹配由标的记录,若符合条件显示(两张表的较计)语法	1)隐式内连接	select * from 左表名 别名,右表名 别名 where 别名.id &#x3D; 别名.id	2)显示内连接	select * from 左表名 别名 [INNER] join 右表名 别名 ON 别名.id">
+<meta name="description" content="笛卡尔积一、多表查询1.1 查询两张表1234* 功能 		多张表查询时候,会出现笛卡尔积(交叉连接)的情况* 语法		select ... from 左表,右表  1.2 内连接1234567功能 	拿作表的记录去匹配由标的记录,若符合条件显示(两张表的较计)语法	1)隐式内连接	select * from 左表名 别名,右表名 别名 where 别名.id &#x3D; 别名.id	2)显示内连接	se">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MySQL-三">
 <meta property="og:url" content="http://yoursite.com/2020/04/30/MySQL_3/index.html">
 <meta property="og:site_name" content="Congrong">
-<meta property="og:description" content="笛卡尔积1.1 查询两张表12* 功能 	多张表查询时候,出现的状况  1.2 内连接1234567功能 	拿作表的记录去匹配由标的记录,若符合条件显示(两张表的较计)语法	1)隐式内连接	select * from 左表名 别名,右表名 别名 where 别名.id &#x3D; 别名.id	2)显示内连接	select * from 左表名 别名 [INNER] join 右表名 别名 ON 别名.id">
+<meta property="og:description" content="笛卡尔积一、多表查询1.1 查询两张表1234* 功能 		多张表查询时候,会出现笛卡尔积(交叉连接)的情况* 语法		select ... from 左表,右表  1.2 内连接1234567功能 	拿作表的记录去匹配由标的记录,若符合条件显示(两张表的较计)语法	1)隐式内连接	select * from 左表名 别名,右表名 别名 where 别名.id &#x3D; 别名.id	2)显示内连接	se">
 <meta property="article:published_time" content="2020-04-30T01:27:00.000Z">
-<meta property="article:modified_time" content="2020-04-30T04:05:07.525Z">
+<meta property="article:modified_time" content="2020-04-30T10:47:32.000Z">
 <meta property="article:author" content="Congrong">
 <meta property="article:tag" content="多表查询">
 <meta name="twitter:card" content="summary">
@@ -403,7 +403,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  289
+                  311
                 </span>
               
 
@@ -440,7 +440,7 @@
       
 
       
-        <h1 id="笛卡尔积"><a href="#笛卡尔积" class="headerlink" title="笛卡尔积"></a>笛卡尔积</h1><h3 id="1-1-查询两张表"><a href="#1-1-查询两张表" class="headerlink" title="1.1 查询两张表"></a>1.1 查询两张表</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">* 功能</span><br><span class="line"> 	多张表查询时候,出现的状况</span><br></pre></td></tr></table></figure>
+        <h1 id="笛卡尔积"><a href="#笛卡尔积" class="headerlink" title="笛卡尔积"></a>笛卡尔积</h1><h1 id="一、多表查询"><a href="#一、多表查询" class="headerlink" title="一、多表查询"></a>一、多表查询</h1><h3 id="1-1-查询两张表"><a href="#1-1-查询两张表" class="headerlink" title="1.1 查询两张表"></a>1.1 查询两张表</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">* </span>功能</span><br><span class="line"> 		多张表查询时候,会出现笛卡尔积(交叉连接)的情况</span><br><span class="line"><span class="bullet">* </span>语法</span><br><span class="line"><span class="code">		select ... from 左表,右表</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="1-2-内连接"><a href="#1-2-内连接" class="headerlink" title="1.2 内连接"></a>1.2 内连接</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">功能 </span><br><span class="line">	拿作表的记录去匹配由标的记录,若符合条件显示(两张表的较计)</span><br><span class="line">语法</span><br><span class="line">	1)隐式内连接</span><br><span class="line">	<span class="keyword">select</span> * <span class="keyword">from</span> 左表名 别名,右表名 别名 <span class="keyword">where</span> 别名.id = 别名.id</span><br><span class="line">	<span class="number">2</span>)显示内连接</span><br><span class="line">	<span class="keyword">select</span> * <span class="keyword">from</span> 左表名 别名 [<span class="keyword">INNER</span>] <span class="keyword">join</span> 右表名 别名 <span class="keyword">ON</span> 别名.id = 别名.id</span><br></pre></td></tr></table></figure>
 
@@ -658,7 +658,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#笛卡尔积"><span class="nav-number">1.</span> <span class="nav-text">笛卡尔积</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-查询两张表"><span class="nav-number">1.0.1.</span> <span class="nav-text">1.1 查询两张表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-内连接"><span class="nav-number">1.0.2.</span> <span class="nav-text">1.2 内连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-外连接"><span class="nav-number">1.0.3.</span> <span class="nav-text">1.3 外连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-子查询"><span class="nav-number">1.0.4.</span> <span class="nav-text">1.4 子查询</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#笛卡尔积"><span class="nav-number">1.</span> <span class="nav-text">笛卡尔积</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一、多表查询"><span class="nav-number">2.</span> <span class="nav-text">一、多表查询</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-查询两张表"><span class="nav-number">2.0.1.</span> <span class="nav-text">1.1 查询两张表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-内连接"><span class="nav-number">2.0.2.</span> <span class="nav-text">1.2 内连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-外连接"><span class="nav-number">2.0.3.</span> <span class="nav-text">1.3 外连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-子查询"><span class="nav-number">2.0.4.</span> <span class="nav-text">1.4 子查询</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
