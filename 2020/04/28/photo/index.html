@@ -837,7 +837,7 @@
   
   <script type="text/javascript">
     var GUEST = ['nick','mail','link'];
-    var guest = 'nick,mail,link';
+    var guest = 'nick,mail';
     guest = guest.split(',').filter(item=>{
       return GUEST.indexOf(item)>-1;
     });
@@ -847,8 +847,8 @@
         notify: false,
         appId: '8J4Nx2Ga8kz0exx6rLdNE67Y-gzGzoHsz',
         appKey: 'OxfuUscv0HexXtv6Xchw1zbr',
-        placeholder: 'Just go go',
-        avatar:'mm',
+        placeholder: '留下邮箱，有回复时你将收到提醒，邮箱不会被公开。',
+        avatar:'wavatar',
         guest_info:guest,
         pageSize:'10' || 10,
     });
