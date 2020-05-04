@@ -75,7 +75,7 @@
 
 
 
-  <meta name="keywords" content="多表查询," />
+  <meta name="keywords" content="面试题," />
 
 
 
@@ -88,17 +88,25 @@
 
 
 
-<meta name="description" content="笛卡尔积一、多表查询1.1 查询两张表1234* 功能 		多张表查询时候,会出现笛卡尔积(交叉连接)的情况* 语法		select ... from 左表,右表  1.2 内连接1234567功能 	拿作表的记录去匹配由标的记录,若符合条件显示(两张表的较计)语法	1)隐式内连接	select * from 左表名 别名,右表名 别名 where 别名.id &#x3D; 别名.id	2)显示内连接	se">
+<meta name="description" content="事务安全 TCL【理解】1. 概述如果一个包含多个步骤的业务操作，被事务管理，那么这些操作要么同时成功，要么同时失败。 应用场景：用户转账 准备数据 123456789101112131415-- 创建库create database day21_pro;-- 使用库use day21_pro;-- 创建数据表CREATE TABLE account (  -- 账户表	id INT PRIMAR">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MySQL-三">
-<meta property="og:url" content="http://yoursite.com/2020/04/30/MySQL_3/index.html">
+<meta property="og:title" content="数据库事务">
+<meta property="og:url" content="http://yoursite.com/2020/05/05/MySql-affair/index.html">
 <meta property="og:site_name" content="Congrong">
-<meta property="og:description" content="笛卡尔积一、多表查询1.1 查询两张表1234* 功能 		多张表查询时候,会出现笛卡尔积(交叉连接)的情况* 语法		select ... from 左表,右表  1.2 内连接1234567功能 	拿作表的记录去匹配由标的记录,若符合条件显示(两张表的较计)语法	1)隐式内连接	select * from 左表名 别名,右表名 别名 where 别名.id &#x3D; 别名.id	2)显示内连接	se">
-<meta property="article:published_time" content="2020-04-30T01:27:00.000Z">
-<meta property="article:modified_time" content="2020-04-30T10:47:32.000Z">
+<meta property="og:description" content="事务安全 TCL【理解】1. 概述如果一个包含多个步骤的业务操作，被事务管理，那么这些操作要么同时成功，要么同时失败。 应用场景：用户转账 准备数据 123456789101112131415-- 创建库create database day21_pro;-- 使用库use day21_pro;-- 创建数据表CREATE TABLE account (  -- 账户表	id INT PRIMAR">
+<meta property="og:image" content="http://yoursite.com/MySql-affair/1588563849352.png">
+<meta property="og:image" content="http://yoursite.com/MySql-affair/1588565465224.png">
+<meta property="og:image" content="http://yoursite.com/MySql-affair/1588574979356.png">
+<meta property="og:image" content="http://yoursite.com/MySql-affair/1588575246485.png">
+<meta property="og:image" content="http://yoursite.com/MySql-affair/1588575464733.png">
+<meta property="og:image" content="http://yoursite.com/MySql-affair/1588575751527.png">
+<meta property="og:image" content="http://yoursite.com/MySql-affair/1588575900641.png">
+<meta property="article:published_time" content="2020-05-04T16:44:15.000Z">
+<meta property="article:modified_time" content="2020-05-04T16:55:18.921Z">
 <meta property="article:author" content="Congrong">
-<meta property="article:tag" content="多表查询">
+<meta property="article:tag" content="面试题">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/MySql-affair/1588563849352.png">
 
 
 
@@ -128,13 +136,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/04/30/MySQL_3/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/05/05/MySql-affair/"/>
 
 
 
 
 
-  <title>MySQL-三 | Congrong</title>
+  <title>数据库事务 | Congrong</title>
   
 
 
@@ -305,7 +313,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/30/MySQL_3/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/05/MySql-affair/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Congrong">
@@ -322,7 +330,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">MySQL-三</h1>
+          <h1 class="post-title" itemprop="name headline">数据库事务</h1>
         
 
         <div class="post-meta">
@@ -334,8 +342,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-30T09:27:00+08:00">
-                2020-04-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-05T00:44:15+08:00">
+                2020-05-05
               </time>
             
 
@@ -375,8 +383,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2020/04/30/MySQL_3/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2020/04/30/MySQL_3/" itemprop="commentCount"></span>
+                <a href="/2020/05/05/MySql-affair/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/05/05/MySql-affair/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -403,7 +411,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  311
+                  1.6k
                 </span>
               
 
@@ -419,7 +427,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  1
+                  6
                 </span>
               
             </div>
@@ -440,14 +448,148 @@
       
 
       
-        <h1 id="笛卡尔积"><a href="#笛卡尔积" class="headerlink" title="笛卡尔积"></a>笛卡尔积</h1><h1 id="一、多表查询"><a href="#一、多表查询" class="headerlink" title="一、多表查询"></a>一、多表查询</h1><h3 id="1-1-查询两张表"><a href="#1-1-查询两张表" class="headerlink" title="1.1 查询两张表"></a>1.1 查询两张表</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">* </span>功能</span><br><span class="line"> 		多张表查询时候,会出现笛卡尔积(交叉连接)的情况</span><br><span class="line"><span class="bullet">* </span>语法</span><br><span class="line"><span class="code">		select ... from 左表,右表</span></span><br></pre></td></tr></table></figure>
+        <h1 id="事务安全-TCL【理解】"><a href="#事务安全-TCL【理解】" class="headerlink" title="事务安全 TCL【理解】"></a>事务安全 TCL【理解】</h1><h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h2><p>如果一个包含多个步骤的业务操作，被事务管理，那么这些操作要么同时成功，要么同时失败。</p>
+<p>应用场景：用户转账</p>
+<p><strong>准备数据</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 创建库</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> day21_pro;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 使用库</span></span><br><span class="line"><span class="keyword">use</span> day21_pro;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 创建数据表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="keyword">account</span> (  <span class="comment">-- 账户表</span></span><br><span class="line">	<span class="keyword">id</span> <span class="built_in">INT</span> PRIMARY <span class="keyword">KEY</span> AUTO_INCREMENT,</span><br><span class="line">	<span class="string">`name`</span> <span class="built_in">VARCHAR</span>(<span class="number">32</span>),</span><br><span class="line">	money <span class="keyword">DOUBLE</span> </span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 添加数据</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">account</span> (<span class="string">`name`</span>, money) <span class="keyword">VALUES</span> (<span class="string">'蝴蝶姐'</span>, <span class="number">1000</span>), (<span class="string">'罗志祥'</span>, <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
 
-<h3 id="1-2-内连接"><a href="#1-2-内连接" class="headerlink" title="1.2 内连接"></a>1.2 内连接</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">功能 </span><br><span class="line">	拿作表的记录去匹配由标的记录,若符合条件显示(两张表的较计)</span><br><span class="line">语法</span><br><span class="line">	1)隐式内连接</span><br><span class="line">	<span class="keyword">select</span> * <span class="keyword">from</span> 左表名 别名,右表名 别名 <span class="keyword">where</span> 别名.id = 别名.id</span><br><span class="line">	<span class="number">2</span>)显示内连接</span><br><span class="line">	<span class="keyword">select</span> * <span class="keyword">from</span> 左表名 别名 [<span class="keyword">INNER</span>] <span class="keyword">join</span> 右表名 别名 <span class="keyword">ON</span> 别名.id = 别名.id</span><br></pre></td></tr></table></figure>
+<p><strong>模拟转账</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 罗志祥扣钱（转出）</span></span><br><span class="line"><span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 机器故障了</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 蝴蝶姐加强（转入）</span></span><br><span class="line"><span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money + <span class="number">100</span> <span class="keyword">WHERE</span> <span class="keyword">id</span> = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
 
-<h3 id="1-3-外连接"><a href="#1-3-外连接" class="headerlink" title="1.3 外连接"></a>1.3 外连接</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">1. </span>左外连接[推荐]</span><br><span class="line"><span class="code">	功能</span></span><br><span class="line"><span class="code">		展示左表全部,在匹配右表记录,若田间符合现实,条件不符合现实null</span></span><br><span class="line"><span class="code">	语法</span></span><br><span class="line"><span class="code">		select... from 左表 left [outer] join 右表 on 连接条件;</span></span><br><span class="line"><span class="bullet">2. </span>右外连接[了解]</span><br><span class="line"><span class="code">	功能</span></span><br><span class="line"><span class="code">		现实右表全部,再去比配右表记录,若添加符合现实,条件不符合现实null</span></span><br><span class="line"><span class="code">	语法</span></span><br><span class="line"><span class="code">    	select ... from 左表 right [outer] join 右表 on 连接条件;</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="1-4-子查询"><a href="#1-4-子查询" class="headerlink" title="1.4 子查询"></a>1.4 子查询</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">1. </span>功能</span><br><span class="line"><span class="code">		一条select语法执行结果,作为另一条select语法的一部分时候</span></span><br><span class="line"><span class="bullet">2. </span>语法</span><br><span class="line"><span class="code">	1)查询结果单值</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="code">	2)拆线呢结果单值多值</span></span><br><span class="line"><span class="code">	</span></span><br><span class="line"><span class="code">	3)查询结果多值多列</span></span><br><span class="line"><span class="bullet">3. </span>规律</span><br></pre></td></tr></table></figure>
 
+<h2 id="2-操作事务【掌握】"><a href="#2-操作事务【掌握】" class="headerlink" title="2. 操作事务【掌握】"></a>2. 操作事务【掌握】</h2><h3 id="2-1-手动提交事务【手动操作mysql使用方案】"><a href="#2-1-手动提交事务【手动操作mysql使用方案】" class="headerlink" title="2.1 手动提交事务【手动操作mysql使用方案】"></a>2.1 手动提交事务【手动操作mysql使用方案】</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">1. </span>开启事务</span><br><span class="line"><span class="code">		begin</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="bullet">2. </span>提交事务</span><br><span class="line"><span class="code">		commit</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="bullet">3. </span>回滚事务</span><br><span class="line"><span class="code">		rollback</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/MySql-affair/1588563849352.png" alt="1588563849352"> </p>
+<p><strong>转账成功</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 1. 开启事务</span></span><br><span class="line">	<span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">-- 2. 扣钱</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line"><span class="comment">-- 3. 加钱</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money + <span class="number">100</span> <span class="keyword">WHERE</span> <span class="keyword">id</span> = <span class="number">1</span>;</span><br><span class="line"><span class="comment">-- 4. 提交事务</span></span><br><span class="line">	<span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><strong>转账失败</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 1.开启事务</span></span><br><span class="line">	<span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">-- 2.扣钱</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line"><span class="comment">-- 3.机器故障</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 4.回滚事务</span></span><br><span class="line">	<span class="keyword">rollback</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h3 id="2-2-自动提交事务【在JDBC将自动提交关闭】"><a href="#2-2-自动提交事务【在JDBC将自动提交关闭】" class="headerlink" title="2.2 自动提交事务【在JDBC将自动提交关闭】"></a>2.2 自动提交事务【在JDBC将自动提交关闭】</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">* </span>默认情况下，在MySQL中每一条DML（增删改）语句，就是一个独立的事务</span><br><span class="line"></span><br><span class="line"><span class="bullet">* </span>查看MySQL是否开启自动提交</span><br><span class="line"><span class="code">		show variables like 'autocommit';</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="bullet">* </span>临时关闭自动提交（手动）</span><br><span class="line"><span class="code">		set autocommit=off;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>模拟转账</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 1.扣钱</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line">	</span><br><span class="line"><span class="comment">-- 2.改为手动提交/回滚</span></span><br><span class="line">	<span class="keyword">commit</span> / <span class="keyword">rollback</span> ;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="3-事务工作原理"><a href="#3-事务工作原理" class="headerlink" title="3. 事务工作原理"></a>3. 事务工作原理</h2><p><strong>注意：</strong></p>
+<blockquote>
+<p>在同一个事务中，出现bug（异常），必须执行rollback命令，不然会影响同一个事务中下一次提交</p>
+</blockquote>
+<p><img src="/MySql-affair/1588565465224.png" alt="1588565465224"> </p>
+<h2 id="4-保存（回滚）点【了解】"><a href="#4-保存（回滚）点【了解】" class="headerlink" title="4. 保存（回滚）点【了解】"></a>4. 保存（回滚）点【了解】</h2><p>​    当事务开启后，一部分sql执行成功，添加一个保存点，后续操作报错了，回滚到保存点，保证之前的操作可以成功提交</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">1. </span>设置保存点</span><br><span class="line"><span class="code">		savepoint 保存点名;</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="bullet">2. </span>回滚到保存点</span><br><span class="line"><span class="code">		rollback to 保存点名;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>场景：罗志祥同时约5个小姐姐，如果前二个成功扣款了设置保存点，保证前二位能够上门服务….</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 1.开启事务</span></span><br><span class="line">	<span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">-- 2.扣钱一次（凤姐）</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line"><span class="comment">-- 3.扣钱二次（芙蓉姐姐）</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line"><span class="comment">-- 4.设置一个保存点</span></span><br><span class="line">	<span class="keyword">savepoint</span> ol;</span><br><span class="line"><span class="comment">-- 5.扣钱三次（石榴姐）</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line"><span class="comment">-- 6.机器故障</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 7.回滚点保存点</span></span><br><span class="line">	<span class="keyword">rollback</span> <span class="keyword">to</span> ol;</span><br><span class="line"><span class="comment">-- 8.提交事务</span></span><br><span class="line">	<span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="5-事务特性-ACID【面试题】"><a href="#5-事务特性-ACID【面试题】" class="headerlink" title="5. 事务特性 ACID【面试题】"></a>5. 事务特性 ACID【面试题】</h2><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">1. </span>原子性：A atomicity</span><br><span class="line"><span class="code">		如果一个包含多个步骤的业务操作，被事务管理，那么这些操作要么同时成功，要么同时失败。</span></span><br><span class="line"><span class="code">		假如我们有个方法中对一个属性进行了N次的更新，但是执行到一半的时候有一个语句有问题出现了异常，这样就可能使得我们上面所说的操作后的点与我们预先的点不同，这不是我们想要的，所以原子性要求你这个方法要么全部执行成功，要么你就别执行。</span></span><br><span class="line"><span class="bullet">2. </span>一致性：C consistency</span><br><span class="line"><span class="code">		事务在执行前后，保证数据的一致性</span></span><br><span class="line"><span class="code">		原子性中规定方法中的操作都执行或者都不执行，但并没有说要所有操作一起执行（一起更新那就乱套了，要哪个结果？），所以操作的执行也是有先后顺序的，那我们要是在执行一半时查询了数据库，那我们会得到中间的更新的属性？答案是不会的，一致性规定事务提交前后只存在两个状态，提交前的状态和提交后的状态，绝对不会出现中间的状态。</span></span><br><span class="line"><span class="bullet">3. </span>隔离性：I isolation【重点】</span><br><span class="line"><span class="code">		多个事务之间，相互独立，互不干扰....</span></span><br><span class="line"><span class="code">		事务的隔离性基于原子性和一致性，每一个事务可以并发执行，但是他们互不干扰，但是也有可能不同的事务会操作同一个资源，这个时候为了保持隔离性会用到锁方案。</span></span><br><span class="line"><span class="bullet">4. </span>持久性：D durability</span><br><span class="line"><span class="code">		事务一旦成功提交，保存到磁盘文件，不可逆....</span></span><br><span class="line"><span class="code">		当一个事务提交了之后那这个数据库状态就发生了改变，哪怕是提交后刚写入一半数据到数据库中，数据库宕机(死机)了，那当你下次重启的时候数据库也会根据提交日志进行回滚，最终将全部的数据写入。</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="6-事务隔离性"><a href="#6-事务隔离性" class="headerlink" title="6. 事务隔离性"></a>6. 事务隔离性</h2><p>​    多个事务之间隔离的，相互独立的。但是如果多个事务操作同一批数据，则会引发一些问题，设置不同的隔离级别就可以解决这些问题。</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">1. </span>脏读【必须要避免的....】</span><br><span class="line"><span class="code">		一个事务中，读取到另一个事务，未提交的数据</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="bullet">2. </span>不可重复读</span><br><span class="line"><span class="code">		一个事务中，二次读取的内容不一致，另外一个事务做了update操作</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">3. </span>幻读</span><br><span class="line"><span class="code">		一个事务中，二次读取的数量不一致，另外一个事务做了insert、delete操作</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="6-1-MySQL数据库隔离级别"><a href="#6-1-MySQL数据库隔离级别" class="headerlink" title="6.1 MySQL数据库隔离级别"></a>6.1 MySQL数据库隔离级别</h3><table>
+<thead>
+<tr>
+<th>级别</th>
+<th>名字</th>
+<th>隔离级别</th>
+<th>脏读</th>
+<th>不可重复读</th>
+<th>幻读</th>
+<th>数据库默认隔离级别</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>读未提交</td>
+<td>read uncommitted</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>读已提交</td>
+<td>read committed</td>
+<td>否</td>
+<td>是</td>
+<td>是</td>
+<td>Oracle和SQL Server</td>
+</tr>
+<tr>
+<td>3</td>
+<td>可重复读</td>
+<td>repeatable read</td>
+<td>否</td>
+<td>否</td>
+<td>是</td>
+<td>MySQL</td>
+</tr>
+<tr>
+<td>4</td>
+<td>串行化</td>
+<td>serializable</td>
+<td>否</td>
+<td>否</td>
+<td>否</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>性能角度：1&gt;2&gt;3&gt;4</p>
+<p>安全角度：4&gt;3&gt;2&gt;1</p>
+<p>综合考虑：2 or 3</p>
+<h3 id="6-2-演示隔离级别产生的问题【课上听一听】"><a href="#6-2-演示隔离级别产生的问题【课上听一听】" class="headerlink" title="6.2 演示隔离级别产生的问题【课上听一听】"></a>6.2 演示隔离级别产生的问题【课上听一听】</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">1. </span>查看当前数据库隔离级别</span><br><span class="line"><span class="code">		show variables like '%isolation%';</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="bullet">2. </span>临时修改隔离级别</span><br><span class="line"><span class="code">		set session transaction isolation level 级别字符串;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>准备模拟二个事务窗口：A窗口、B窗口</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">1. </span>演示脏读</span><br><span class="line"><span class="code">	设置数据库隔离级别 read uncommitted;</span></span><br><span class="line"><span class="code">		set session transaction isolation level read uncommitted;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/MySql-affair/1588574979356.png" alt="1588574979356"> </p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">2. </span>解决脏读问题（引出：不可重复读问题）</span><br><span class="line"><span class="code">	设置数据库隔离级别 read committed;</span></span><br><span class="line"><span class="code">		set session transaction isolation level read committed;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/MySql-affair/1588575246485.png" alt="1588575246485"> </p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">3. </span>解决不可重复读问题（出现幻读问题）</span><br><span class="line"><span class="code">	设置数据库隔离级别 repeatable read;</span></span><br><span class="line"><span class="code">		set session transaction isolation level repeatable read;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/MySql-affair/1588575464733.png" alt="1588575464733"> </p>
+<p><img src="/MySql-affair/1588575751527.png" alt="1588575751527"> </p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">4. </span>解决幻读问题</span><br><span class="line"><span class="code">	设置数据库隔离级别 serializable;</span></span><br><span class="line"><span class="code">		set session transaction isolation level serializable;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/MySql-affair/1588575900641.png" alt="1588575900641"></p>
 
       
     </div>
@@ -475,7 +617,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/%E5%A4%9A%E8%A1%A8%E6%9F%A5%E8%AF%A2/" rel="tag"># 多表查询</a>
+            <a href="/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/" rel="tag"># 面试题</a>
           
         </div>
       
@@ -488,8 +630,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/04/29/MySQL_1/" rel="next" title="Mysql">
-                <i class="fa fa-chevron-left"></i> Mysql
+              <a href="/2020/04/30/MySQL_3/" rel="next" title="MySQL-三">
+                <i class="fa fa-chevron-left"></i> MySQL-三
               </a>
             
           </div>
@@ -498,8 +640,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2020/05/05/MySql-affair/" rel="prev" title="数据库事务">
-                数据库事务 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/05/05/MySql-function/" rel="prev" title="MySql函数">
+                MySql函数 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -662,7 +804,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#笛卡尔积"><span class="nav-number">1.</span> <span class="nav-text">笛卡尔积</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一、多表查询"><span class="nav-number">2.</span> <span class="nav-text">一、多表查询</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-查询两张表"><span class="nav-number">2.0.1.</span> <span class="nav-text">1.1 查询两张表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-内连接"><span class="nav-number">2.0.2.</span> <span class="nav-text">1.2 内连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-外连接"><span class="nav-number">2.0.3.</span> <span class="nav-text">1.3 外连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-子查询"><span class="nav-number">2.0.4.</span> <span class="nav-text">1.4 子查询</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#事务安全-TCL【理解】"><span class="nav-number">1.</span> <span class="nav-text">事务安全 TCL【理解】</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-概述"><span class="nav-number">1.1.</span> <span class="nav-text">1. 概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-操作事务【掌握】"><span class="nav-number">1.2.</span> <span class="nav-text">2. 操作事务【掌握】</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-手动提交事务【手动操作mysql使用方案】"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 手动提交事务【手动操作mysql使用方案】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-自动提交事务【在JDBC将自动提交关闭】"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 自动提交事务【在JDBC将自动提交关闭】</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-事务工作原理"><span class="nav-number">1.3.</span> <span class="nav-text">3. 事务工作原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-保存（回滚）点【了解】"><span class="nav-number">1.4.</span> <span class="nav-text">4. 保存（回滚）点【了解】</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-事务特性-ACID【面试题】"><span class="nav-number">1.5.</span> <span class="nav-text">5. 事务特性 ACID【面试题】</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-事务隔离性"><span class="nav-number">1.6.</span> <span class="nav-text">6. 事务隔离性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-MySQL数据库隔离级别"><span class="nav-number">1.6.1.</span> <span class="nav-text">6.1 MySQL数据库隔离级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-演示隔离级别产生的问题【课上听一听】"><span class="nav-number">1.6.2.</span> <span class="nav-text">6.2 演示隔离级别产生的问题【课上听一听】</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

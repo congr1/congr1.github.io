@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2020-04-30T10:47:32.000Z</updated>
+  <updated>2020-05-04T16:55:59.335Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,60 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MySql函数</title>
+    <link href="http://yoursite.com/2020/05/05/MySql-function/"/>
+    <id>http://yoursite.com/2020/05/05/MySql-function/</id>
+    <published>2020-05-04T16:54:39.000Z</published>
+    <updated>2020-05-04T16:55:59.335Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;一、数学函数&quot;&gt;&lt;a href=&quot;#一、数学函数&quot; class=&quot;headerlink&quot; title=&quot;一、数学函数&quot;&gt;&lt;/a&gt;一、数学函数&lt;/h2&gt;&lt;figure class=&quot;highlight sql&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td
+        
+      
+    
+    </summary>
+    
+    
+      <category term="MySQL" scheme="http://yoursite.com/categories/MySQL/"/>
+    
+    
+      <category term="mysql函数" scheme="http://yoursite.com/tags/mysql%E5%87%BD%E6%95%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>数据库事务</title>
+    <link href="http://yoursite.com/2020/05/05/MySql-affair/"/>
+    <id>http://yoursite.com/2020/05/05/MySql-affair/</id>
+    <published>2020-05-04T16:44:15.000Z</published>
+    <updated>2020-05-04T16:55:18.921Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;事务安全-TCL【理解】&quot;&gt;&lt;a href=&quot;#事务安全-TCL【理解】&quot; class=&quot;headerlink&quot; title=&quot;事务安全 TCL【理解】&quot;&gt;&lt;/a&gt;事务安全 TCL【理解】&lt;/h1&gt;&lt;h2 id=&quot;1-概述&quot;&gt;&lt;a href=&quot;#1-概述&quot;
+        
+      
+    
+    </summary>
+    
+    
+      <category term="MySQL" scheme="http://yoursite.com/categories/MySQL/"/>
+    
+    
+      <category term="面试题" scheme="http://yoursite.com/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/"/>
+    
+  </entry>
   
   <entry>
     <title>MySQL-三</title>
