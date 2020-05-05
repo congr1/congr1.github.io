@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://laladvq.cn/"/>
-  <updated>2020-05-04T16:55:59.335Z</updated>
+  <updated>2020-05-05T14:40:10.207Z</updated>
   <id>https://laladvq.cn/</id>
   
   <author>
@@ -15,6 +15,60 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MySql性能</title>
+    <link href="https://laladvq.cn/2020/05/05/MySql-property/"/>
+    <id>https://laladvq.cn/2020/05/05/MySql-property/</id>
+    <published>2020-05-05T14:37:22.000Z</published>
+    <updated>2020-05-05T14:40:10.207Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;一-MySQL性能&quot;&gt;&lt;a href=&quot;#一-MySQL性能&quot; class=&quot;headerlink&quot; title=&quot;一 MySQL性能&quot;&gt;&lt;/a&gt;一 MySQL性能&lt;/h1&gt;&lt;h2 id=&quot;1-1-分析-数据库查询效率低下&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+    
+      <category term="MySQL" scheme="https://laladvq.cn/categories/MySQL/"/>
+    
+    
+      <category term="面试题" scheme="https://laladvq.cn/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MySql索引</title>
+    <link href="https://laladvq.cn/2020/05/05/MySql-index/"/>
+    <id>https://laladvq.cn/2020/05/05/MySql-index/</id>
+    <published>2020-05-05T12:21:03.000Z</published>
+    <updated>2020-05-05T14:45:32.134Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;一、MySql索引&quot;&gt;&lt;a href=&quot;#一、MySql索引&quot; class=&quot;headerlink&quot; title=&quot;一、MySql索引&quot;&gt;&lt;/a&gt;一、MySql索引&lt;/h1&gt;&lt;h3 id=&quot;1-1-索引是什么&quot;&gt;&lt;a href=&quot;#1-1-索引是什么&quot;
+        
+      
+    
+    </summary>
+    
+    
+      <category term="MySQL" scheme="https://laladvq.cn/categories/MySQL/"/>
+    
+    
+      <category term="面试题" scheme="https://laladvq.cn/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/"/>
+    
+  </entry>
   
   <entry>
     <title>MySql函数</title>
