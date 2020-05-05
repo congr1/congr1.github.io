@@ -98,11 +98,12 @@
 <meta property="og:image" content="https://laladvq.cn/2020/05/05/MySql-index/1588682428194.png">
 <meta property="og:image" content="https://laladvq.cn/2020/05/05/MySql-index/1588682762187.png">
 <meta property="og:image" content="https://laladvq.cn/2020/05/05/MySql-index/1588684097046.png">
+<meta property="og:image" content="https://laladvq.cn/2020/05/05/MySql-index/1588690612854.png">
 <meta property="og:image" content="https://laladvq.cn/2020/05/05/MySql-index/1588684786033.png">
 <meta property="og:image" content="https://laladvq.cn/2020/05/05/MySql-index/1588685216737.png">
 <meta property="og:image" content="https://laladvq.cn/2020/05/05/MySql-index/1588685238401.png">
 <meta property="article:published_time" content="2020-05-05T12:21:03.000Z">
-<meta property="article:modified_time" content="2020-05-05T14:50:18.559Z">
+<meta property="article:modified_time" content="2020-05-05T14:56:56.287Z">
 <meta property="article:author" content="Congrong">
 <meta property="article:tag" content="面试题">
 <meta name="twitter:card" content="summary">
@@ -495,20 +496,18 @@
 </li>
 <li><p>叶子节点包含所有索引字段</p>
 </li>
-<li><p>叶子节点使用指针来凝结,提高区间访问的性能</p>
-<ul>
-<li>相对于一个双向列表.</li>
-</ul>
+<li><p>叶子节点使用指针来凝结,提高区间访问的性能,</p>
+</li>
+<li><p>相当于一个双向列表.</p>
+<p><img src="/2020/05/05/MySql-index/1588690612854.png" alt="1588690612854"></p>
 </li>
 </ul>
 </li>
-</ul>
-</li>
-</ul>
-<pre><code>![bshu](MySql-index/1588684449818.png)</code></pre><ul>
 <li><p>Hash:做哈希运算,得到散列值,再从中快速定位所需要的数据.一一映射.,只需要进行一次哈希运算就可以快速定位,所以查找速度非常快,哈希之对于精确查找,对于范围查找不行,因为有范围,不好算哈希值.</p>
 <ul>
 <li>MD5就是一种哈希算法</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
