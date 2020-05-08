@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://laladvq.cn/"/>
-  <updated>2020-05-08T16:10:34.287Z</updated>
+  <updated>2020-05-08T16:15:29.038Z</updated>
   <id>https://laladvq.cn/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>JDBC</title>
+    <title>JDBC&amp;连接池</title>
     <link href="https://laladvq.cn/2020/05/08/JDBC/"/>
     <id>https://laladvq.cn/2020/05/08/JDBC/</id>
     <published>2020-05-08T15:41:51.000Z</published>
-    <updated>2020-05-08T16:10:34.287Z</updated>
+    <updated>2020-05-08T16:15:29.038Z</updated>
     
     <summary type="html">
     
@@ -40,6 +40,8 @@
     
     
       <category term="JBDC" scheme="https://laladvq.cn/tags/JBDC/"/>
+    
+      <category term="连接池理论" scheme="https://laladvq.cn/tags/%E8%BF%9E%E6%8E%A5%E6%B1%A0%E7%90%86%E8%AE%BA/"/>
     
   </entry>
   

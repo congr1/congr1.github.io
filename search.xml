@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>JDBC</title>
+    <title>JDBC&amp;连接池</title>
     <url>/2020/05/08/JDBC/</url>
     <content><![CDATA[<h1 id="一-JDBC基础"><a href="#一-JDBC基础" class="headerlink" title="一 JDBC基础"></a>一 JDBC基础</h1><h2 id="1-1-概述"><a href="#1-1-概述" class="headerlink" title="1.1 概述"></a>1.1 概述</h2><p>Java 数据库连接（Java DataBase Connectivity）</p>
 <p><strong>作用</strong>：通过Java语言操作数据库</p>
@@ -109,12 +109,18 @@
 
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JdbcUtils</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> DataSource dataSource = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1.初始化连接池对象（druid），一个项目只有一个 static&#123;&#125;</span></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 通过类加载器读取src目录下配置文件，获取io流</span></span><br><span class="line">            InputStream is = JdbcUtils.class.getClassLoader().getResourceAsStream("druid.properties");</span><br><span class="line">            <span class="comment">// 创建 Properties对象</span></span><br><span class="line">            Properties properties = <span class="keyword">new</span> Properties();</span><br><span class="line">            properties.load(is);</span><br><span class="line">            <span class="comment">// druid连接池工厂对象，初始化连接池</span></span><br><span class="line">            dataSource = DruidDataSourceFactory.createDataSource(properties);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2.提供获取连接池对象静态方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> DataSource <span class="title">getDataSource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> dataSource;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 3.提供连接对象的静态方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Connection <span class="title">getConnection</span><span class="params">()</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> dataSource.getConnection();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 4.提供释放资源的静态方法（connection是归还）</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">(ResultSet resultSet, Statement statement, Connection connection)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (resultSet != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                resultSet.close();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (statement != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                statement.close();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (connection != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                connection.close();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 重载关闭方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">(Statement statement, Connection connection)</span> </span>&#123;</span><br><span class="line">        close(<span class="keyword">null</span>, statement, connection);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<h1 id="三-理论梳理"><a href="#三-理论梳理" class="headerlink" title="三 理论梳理"></a>三 理论梳理</h1><h4 id="1、为什么要使用连接池"><a href="#1、为什么要使用连接池" class="headerlink" title="1、为什么要使用连接池"></a>1、为什么要使用连接池</h4><p>因为如果没有线程池的话,每次得创建连接执行一次tcp协议,当用户同时操作多了,会消耗性能,因此需要一个容器管理,默认申请一些连接对象,当访问的时候从容器中获取链接对象,用户访问完之后,会讲连接对象归还给容器..优点是:减轻服务器压力,节约资源.提高访问连接复用性,用户访问高效</p>
+<h4 id="2、什么是连接池"><a href="#2、什么是连接池" class="headerlink" title="2、什么是连接池"></a>2、什么是连接池</h4><p>连接池其实就是一个容器，存放数据库连接的容器。</p>
+<h4 id="3、连接池的工作原理-从三个方面分析-。"><a href="#3、连接池的工作原理-从三个方面分析-。" class="headerlink" title="3、连接池的工作原理  (从三个方面分析)。"></a>3、连接池的工作原理  (从三个方面分析)。</h4><h5 id="3-1-连接池的建立"><a href="#3-1-连接池的建立" class="headerlink" title="3.1 连接池的建立"></a>3.1 连接池的建立</h5><p>​        一般在系统初始化时,连接池会根据系统配置建立,并在池中创建几个对象,使用时候从池里获取就行,这样可以提高连接复用性,还有避免了创建连接和关闭造成的开销</p>
+<h5 id="3-2-连接池的管理"><a href="#3-2-连接池的管理" class="headerlink" title="3.2 连接池的管理"></a>3.2 连接池的管理</h5><p>​        当客户女鬼连接时,看连接池是否有空闲连接,如果有空闲连接的化,则分配给用户使用,如果没有空闲连接,则查看所有连接数是否达到最大连接数,如果没达到就创建一个连接给请求的客户,如果达到了,就按照最大等待事件进行等待,如果超出等待时间则抛出异常给客户,当客户释放数据库连接时,先判断连接的引用次数是否超过了规定值,如果超过就从连接池种删除连接,否则保留给其他用户使用,该策略主要了保证了数据库连接的复用,频繁的建立署方带来的资源开销</p>
+<h5 id="3-3-连接池的关闭"><a href="#3-3-连接池的关闭" class="headerlink" title="3.3 连接池的关闭"></a>3.3 连接池的关闭</h5><p>当应用程序退出时,关闭连接池种的所有连接,释放连接池相关的资源,与创建相反.</p>
 ]]></content>
       <categories>
         <category>MySQL</category>
       </categories>
       <tags>
         <tag>JBDC</tag>
+        <tag>连接池理论</tag>
       </tags>
   </entry>
   <entry>
@@ -134,323 +140,6 @@
       </categories>
       <tags>
         <tag>多表查询</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Mysql</title>
-    <url>/2020/04/29/MySQL_1/</url>
-    <content><![CDATA[<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">哈哈哈你说是什么</span><br></pre></td></tr></table></figure>
-]]></content>
-  </entry>
-  <entry>
-    <title>MySql索引</title>
-    <url>/2020/05/05/MySql-index/</url>
-    <content><![CDATA[<h1 id="一、MySql索引"><a href="#一、MySql索引" class="headerlink" title="一、MySql索引"></a>一、MySql索引</h1><h3 id="1-1-索引是什么"><a href="#1-1-索引是什么" class="headerlink" title="1.1 索引是什么"></a>1.1 索引是什么</h3><ul>
-<li><p>索引是帮助MySql高效获取数据的排好序的数据结构</p>
-<ul>
-<li><p>在没有索引的时候是磁盘寻址,查询数据的时候是一个一个查找,在大数据查找时候会 很慢.</p>
-</li>
-<li><p>为了加快查找效率,可以维护一个二叉查找树,每个节点分别包含索引键值和一个指向对相应数据记录物理地址的指针,这样就可以运用二叉树快速获取到响应数据</p>
-<p><img src="/2020/05/05/MySql-index/1588682327851.png" alt="地址对应图"></p>
-</li>
-</ul>
-</li>
-<li><p>索引数据结构</p>
-<ul>
-<li><p>二叉树</p>
-<ul>
-<li><p>如果数据自增的话,二叉树就变成链表了,高度会无限增高,查询效果会跟链表相似</p>
-<p><img src="/2020/05/05/MySql-index/1588682428194.png" alt="二叉树"></p>
-</li>
-</ul>
-</li>
-<li><p>红黑树</p>
-<ul>
-<li><p>特殊的二叉树,简称二叉平衡树,高度还是不确定</p>
-<p><img src="/2020/05/05/MySql-index/1588682762187.png" alt="1588682762187"></p>
-</li>
-</ul>
-</li>
-<li><p>BTree</p>
-<ul>
-<li><p>多路平衡搜索树</p>
-</li>
-<li><p>叶节点具有相同深度,叶节点的指针为空</p>
-</li>
-<li><p>所有索引元素不重复</p>
-</li>
-<li><p>节点中的数据索引从左到右递增排列</p>
-<p><img src="/2020/05/05/MySql-index/1588684097046.png" alt="bshu"></p>
-</li>
-</ul>
-</li>
-<li><p>B+Tree</p>
-<ul>
-<li><p>优化BTree（非叶子节点：索引+指针、叶子节点：索引+数据【地址】）</p>
-</li>
-<li><p>非叶子节点不存储data,只存储索引(冗余),可以放更多的索引</p>
-</li>
-<li><p>叶子节点包含所有索引字段</p>
-</li>
-<li><p>叶子节点使用指针来凝结,提高区间访问的性能,</p>
-</li>
-<li><p>相当于一个双向列表.</p>
-<p><img src="/2020/05/05/MySql-index/1588690612854.png" alt="1588690612854"></p>
-</li>
-</ul>
-</li>
-<li><p>Hash:做哈希运算,得到散列值,再从中快速定位所需要的数据.一一映射.,只需要进行一次哈希运算就可以快速定位,所以查找速度非常快,哈希之对于精确查找,对于范围查找不行,因为有范围,不好算哈希值.</p>
-<ul>
-<li>MD5就是一种哈希算法</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="1-2-mysql中的b-true"><a href="#1-2-mysql中的b-true" class="headerlink" title="1.2 mysql中的b+true"></a>1.2 mysql中的b+true</h2><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 查看mysql索引节点大小</span></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> <span class="keyword">status</span> <span class="keyword">like</span> <span class="string">'innodb_page_size'</span>;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2020/05/05/MySql-index/1588684786033.png" alt="1588684786033"></p>
-<h2 id="2-1-MySQL索引分类"><a href="#2-1-MySQL索引分类" class="headerlink" title="2.1 MySQL索引分类"></a>2.1 MySQL索引分类</h2><figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">* </span>主键（约束）索引</span><br><span class="line"><span class="code">		主键约束+提高查询效率</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="bullet">* </span>唯一（约束）索引</span><br><span class="line"><span class="code">		唯一约束+提高查询效率</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">* </span>普通索引</span><br><span class="line"><span class="code">		仅提高查询效率</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">* </span>组合（联合）索引</span><br><span class="line"><span class="code">		多个字段组成索引</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">* </span>全文索引</span><br><span class="line"><span class="code">		solr、es</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">* </span>hash索引</span><br><span class="line"><span class="code">		根据key-value 效率非常高</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="2-2-MySQL索引语法"><a href="#2-2-MySQL索引语法" class="headerlink" title="2.2 MySQL索引语法"></a>2.2 MySQL索引语法</h2><h3 id="2-2-1-创建索引"><a href="#2-2-1-创建索引" class="headerlink" title="2.2.1 创建索引"></a>2.2.1 创建索引</h3><h4 id="①-直接创建【了解】"><a href="#①-直接创建【了解】" class="headerlink" title="① 直接创建【了解】"></a>① 直接创建【了解】</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 创建普通索引</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">index</span> 索引名 <span class="keyword">on</span> 表名(字段);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 创建唯一索引</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">unique</span> <span class="keyword">index</span> 索引名 <span class="keyword">on</span> 表名(字段);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 创建普通组合索引</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">index</span> 索引名 <span class="keyword">on</span> 表名(字段<span class="number">1</span>,字段<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 创建唯一组合索引</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">unique</span> <span class="keyword">index</span> 索引名 <span class="keyword">on</span> 表名(字段<span class="number">1</span>,字段<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 创建学生表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> student(</span><br><span class="line"> <span class="keyword">id</span> <span class="built_in">INT</span>,</span><br><span class="line"> <span class="string">`name`</span> <span class="built_in">VARCHAR</span>(<span class="number">32</span>),</span><br><span class="line"> telephone <span class="built_in">VARCHAR</span>(<span class="number">11</span>)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- name字段适合设置什么索引？</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> name_idx <span class="keyword">ON</span> student(<span class="string">`name`</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- telephone适合设置什么索引？</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">UNIQUE</span> <span class="keyword">INDEX</span> telephone_uni_idx <span class="keyword">ON</span> student(telephone);</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h4 id="②-修改表时指定【了解】"><a href="#②-修改表时指定【了解】" class="headerlink" title="② 修改表时指定【了解】"></a>② 修改表时指定【了解】</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 添加一个主键，这意味着索引值必须是唯一的，且不能为NULL</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> 表名 <span class="keyword">add</span> primary <span class="keyword">key</span>(字段);  <span class="comment">--默认索引名：primary</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 添加唯一索引（除了NULL外，NULL可能会出现多次）</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> 表名 <span class="keyword">add</span> <span class="keyword">unique</span>(字段); <span class="comment">-- 默认索引名：字段名</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 添加普通索引，索引值可以出现多次。</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> 表名 <span class="keyword">add</span> <span class="keyword">index</span>(字段); <span class="comment">-- 默认索引名：字段名</span></span><br></pre></td></tr></table></figure>
-
-
-
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 指定id为主键索引</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> student <span class="keyword">ADD</span> PRIMARY <span class="keyword">KEY</span>(<span class="keyword">id</span>);</span><br><span class="line"><span class="comment">-- 指定name为普通索引</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> student <span class="keyword">ADD</span> <span class="keyword">INDEX</span>(<span class="string">`name`</span>);</span><br><span class="line"><span class="comment">-- 指定telephone为唯一索引</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> student <span class="keyword">ADD</span> <span class="keyword">UNIQUE</span>(telephone);</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h4 id="③-创建表时指定【掌握】"><a href="#③-创建表时指定【掌握】" class="headerlink" title="③ 创建表时指定【掌握】"></a>③ 创建表时指定【掌握】</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 创建教师表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> teacher(</span><br><span class="line"> <span class="keyword">id</span> <span class="built_in">INT</span> PRIMARY <span class="keyword">KEY</span> AUTO_INCREMENT, <span class="comment">-- 主键索引</span></span><br><span class="line"> <span class="string">`name`</span> <span class="built_in">VARCHAR</span>(<span class="number">32</span>),</span><br><span class="line"> telephone <span class="built_in">VARCHAR</span>(<span class="number">11</span>) <span class="keyword">UNIQUE</span>, <span class="comment">-- 唯一索引</span></span><br><span class="line"> sex <span class="built_in">VARCHAR</span>(<span class="number">5</span>),</span><br><span class="line"> birthday <span class="built_in">DATE</span>,</span><br><span class="line"> <span class="keyword">INDEX</span>(<span class="string">`name`</span>) <span class="comment">-- 普通索引</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="2-3-1-删除索引"><a href="#2-3-1-删除索引" class="headerlink" title="2.3.1 删除索引"></a>2.3.1 删除索引</h2><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 直接删除</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">index</span> 索引名 <span class="keyword">on</span> 表名;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 修改表时删除 【掌握】</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> 表名 <span class="keyword">drop</span> <span class="keyword">index</span> 索引名;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 删除name普通索引</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">INDEX</span> name_idx <span class="keyword">ON</span> student;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 删除telephone唯一索引</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> student <span class="keyword">DROP</span> <span class="keyword">INDEX</span> telephone_uni_idx;</span><br></pre></td></tr></table></figure>
-
-<h2 id="2-4-索引的优缺点"><a href="#2-4-索引的优缺点" class="headerlink" title="2.4 索引的优缺点"></a>2.4 索引的优缺点</h2><figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">* </span>优点</span><br><span class="line"><span class="code">		减少磁盘IO，提高查询效率</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">* </span>缺点</span><br><span class="line"><span class="code">		索引占用磁盘空间</span></span><br><span class="line"><span class="code">		我们在进行增删改时，索引的维护会增加成本，可能会降低服务器性能</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="2-5-索引创建原则"><a href="#2-5-索引创建原则" class="headerlink" title="2.5 索引创建原则"></a>2.5 索引创建原则</h2><figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">1. </span>字段内容可识别度不能低于70%</span><br><span class="line"></span><br><span class="line"><span class="bullet">2. </span>经常使用where条件搜索的字段</span><br><span class="line"></span><br><span class="line"><span class="bullet">3. </span>经常使用表连接的字段（内连接、外连接）</span><br><span class="line"></span><br><span class="line"><span class="bullet">4. </span>经常排序的字段 order by</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="bullet">* </span>注意：索引本身会占用磁盘空间，不是所有的字段都适合增加索引....</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h4 id="2-6-常见索引失效情况"><a href="#2-6-常见索引失效情况" class="headerlink" title="2.6 常见索引失效情况"></a>2.6 常见索引失效情况</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 1.使用like模糊匹配，%通配符在最左侧使用时</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> email <span class="keyword">like</span> <span class="string">'%jack1234567%'</span>;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 2.尽量避免使用or，如果条件有一个没有索引，那么会进行全表扫描</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> <span class="keyword">id</span> = <span class="number">88</span> <span class="keyword">or</span> sex = <span class="string">'male'</span>;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 3.在索引列上进行计算</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span>  <span class="keyword">id</span>+<span class="number">1</span> = <span class="number">88</span>;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 4.使用 !=、 not in、is not null时</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> username != <span class="string">'jack12'</span>;</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="二、MySql存储引擎"><a href="#二、MySql存储引擎" class="headerlink" title="二、MySql存储引擎"></a>二、MySql存储引擎</h1><p>MySQL存储引擎的不同，那么索引文件保存的方式也有所不同，常见的有二种存储引擎<strong>MyISAM</strong>和<strong>InnoDB</strong>。</p>
-<h3 id="根节点常驻内存"><a href="#根节点常驻内存" class="headerlink" title="根节点常驻内存"></a>根节点常驻内存</h3><h2 id="2-1-MyISAM（非聚集索引）"><a href="#2-1-MyISAM（非聚集索引）" class="headerlink" title="2.1 MyISAM（非聚集索引）"></a>2.1 MyISAM（非聚集索引）</h2><p>MySQL5.5版本之前默认存储引擎</p>
-<blockquote>
-<p>特点：不支持事务、不支持外键约束</p>
-</blockquote>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">DATABASE</span> day22_pro;</span><br><span class="line"><span class="keyword">USE</span> day22_pro;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 创建 myisam存储引擎表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> tab_myisam(</span><br><span class="line"> <span class="keyword">id</span> <span class="built_in">INT</span>,</span><br><span class="line"> <span class="string">`name`</span> <span class="built_in">VARCHAR</span>(<span class="number">32</span>)</span><br><span class="line">)<span class="keyword">ENGINE</span>=MYISAM;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2020/05/05/MySql-index/1588685216737.png" alt="1588685216737"></p>
-<h2 id="2-2-InnoDB（聚集索引）"><a href="#2-2-InnoDB（聚集索引）" class="headerlink" title="2.2 InnoDB（聚集索引）"></a>2.2 InnoDB（聚集索引）</h2><ul>
-<li><p>innoDB索引实现(聚集)</p>
-<ul>
-<li><p>表数据文件按照T+TREE组织的一个索引结构文件</p>
-</li>
-<li><p>聚集索引-叶节点包含了完整的数据巨鹿</p>
-</li>
-<li><p>为什么innoDB表必须有主键,并且推荐使用整型的自增主键,</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">没有主键的话,mysql会默认选择一列唯一的作为主键,或者自动给添加一列主键用来维护你的数据库,在后台存在,是看不到的.</span><br><span class="line">因为在查找中有大量的比较操作,</span><br><span class="line">	1.比较问题:</span><br><span class="line">		如果是整型的话,相对好比较,如果是uuid的话,则在比较的时候还会降低性能.</span><br><span class="line">	2.内存问题:</span><br><span class="line">		整型相比较,字符串占用字节少,节约空间.</span><br><span class="line">	3.为什么自增</span><br><span class="line">    	每个节点的都是从左到右递增的,大节点和大节点也是从左到右递增的,如果不是自增,不好维护,容易产生分裂和树平衡,影响效率,消耗时间.</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>为什么非主键索引结构叶子节点存储的是主键值?(一致性和节省存储空间)</p>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"> </span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-</li>
-</ul>
-<p>MySQL5.5版本之后默认存储引擎</p>
-<blockquote>
-<p>特点：支持事务、支持外键约束</p>
-</blockquote>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 创建 innodb存储引擎表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> tab_innodb(</span><br><span class="line"> <span class="keyword">id</span> <span class="built_in">INT</span>,</span><br><span class="line"> <span class="string">`name`</span> <span class="built_in">VARCHAR</span>(<span class="number">32</span>)</span><br><span class="line">)<span class="keyword">ENGINE</span> = <span class="keyword">INNODB</span>;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2020/05/05/MySql-index/1588685238401.png" alt="1588685238401"></p>
-]]></content>
-      <categories>
-        <category>MySQL</category>
-      </categories>
-      <tags>
-        <tag>面试题</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>数据库事务</title>
-    <url>/2020/05/05/MySql-affair/</url>
-    <content><![CDATA[<h1 id="事务安全-TCL【理解】"><a href="#事务安全-TCL【理解】" class="headerlink" title="事务安全 TCL【理解】"></a>事务安全 TCL【理解】</h1><h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h2><p>如果一个包含多个步骤的业务操作，被事务管理，那么这些操作要么同时成功，要么同时失败。</p>
-<p>应用场景：用户转账</p>
-<p><strong>准备数据</strong></p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 创建库</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> day21_pro;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 使用库</span></span><br><span class="line"><span class="keyword">use</span> day21_pro;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 创建数据表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="keyword">account</span> (  <span class="comment">-- 账户表</span></span><br><span class="line">	<span class="keyword">id</span> <span class="built_in">INT</span> PRIMARY <span class="keyword">KEY</span> AUTO_INCREMENT,</span><br><span class="line">	<span class="string">`name`</span> <span class="built_in">VARCHAR</span>(<span class="number">32</span>),</span><br><span class="line">	money <span class="keyword">DOUBLE</span> </span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 添加数据</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">account</span> (<span class="string">`name`</span>, money) <span class="keyword">VALUES</span> (<span class="string">'蝴蝶姐'</span>, <span class="number">1000</span>), (<span class="string">'罗志祥'</span>, <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
-
-<p><strong>模拟转账</strong></p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 扣钱（转出）</span></span><br><span class="line"><span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 机器故障了</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 加强（转入）</span></span><br><span class="line"><span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money + <span class="number">100</span> <span class="keyword">WHERE</span> <span class="keyword">id</span> = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="2-操作事务【掌握】"><a href="#2-操作事务【掌握】" class="headerlink" title="2. 操作事务【掌握】"></a>2. 操作事务【掌握】</h2><h3 id="2-1-手动提交事务【手动操作mysql使用方案】"><a href="#2-1-手动提交事务【手动操作mysql使用方案】" class="headerlink" title="2.1 手动提交事务【手动操作mysql使用方案】"></a>2.1 手动提交事务【手动操作mysql使用方案】</h3><figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">1. </span>开启事务</span><br><span class="line"><span class="code">		begin</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="bullet">2. </span>提交事务</span><br><span class="line"><span class="code">		commit</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="bullet">3. </span>回滚事务</span><br><span class="line"><span class="code">		rollback</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="/2020/05/05/MySql-affair/1588563849352.png" alt="1588563849352"> </p>
-<p><strong>转账成功</strong></p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 1. 开启事务</span></span><br><span class="line">	<span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">-- 2. 扣钱</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line"><span class="comment">-- 3. 加钱</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money + <span class="number">100</span> <span class="keyword">WHERE</span> <span class="keyword">id</span> = <span class="number">1</span>;</span><br><span class="line"><span class="comment">-- 4. 提交事务</span></span><br><span class="line">	<span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<p><strong>转账失败</strong></p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 1.开启事务</span></span><br><span class="line">	<span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">-- 2.扣钱</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line"><span class="comment">-- 3.机器故障</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 4.回滚事务</span></span><br><span class="line">	<span class="keyword">rollback</span>;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-<h3 id="2-2-自动提交事务【在JDBC将自动提交关闭】"><a href="#2-2-自动提交事务【在JDBC将自动提交关闭】" class="headerlink" title="2.2 自动提交事务【在JDBC将自动提交关闭】"></a>2.2 自动提交事务【在JDBC将自动提交关闭】</h3><figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">* </span>默认情况下，在MySQL中每一条DML（增删改）语句，就是一个独立的事务</span><br><span class="line"></span><br><span class="line"><span class="bullet">* </span>查看MySQL是否开启自动提交</span><br><span class="line"><span class="code">		show variables like 'autocommit';</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="bullet">* </span>临时关闭自动提交（手动）</span><br><span class="line"><span class="code">		set autocommit=off;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>模拟转账</strong></p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 1.扣钱</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line">	</span><br><span class="line"><span class="comment">-- 2.改为手动提交/回滚</span></span><br><span class="line">	<span class="keyword">commit</span> / <span class="keyword">rollback</span> ;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-<h2 id="3-事务工作原理"><a href="#3-事务工作原理" class="headerlink" title="3. 事务工作原理"></a>3. 事务工作原理</h2><p><strong>注意：</strong></p>
-<blockquote>
-<p>在同一个事务中，出现bug（异常），必须执行rollback命令，不然会影响同一个事务中下一次提交</p>
-</blockquote>
-<p><img src="/2020/05/05/MySql-affair/1588565465224.png" alt="1588565465224"> </p>
-<h2 id="4-保存（回滚）点【了解】"><a href="#4-保存（回滚）点【了解】" class="headerlink" title="4. 保存（回滚）点【了解】"></a>4. 保存（回滚）点【了解】</h2><p>​    当事务开启后，一部分sql执行成功，添加一个保存点，后续操作报错了，回滚到保存点，保证之前的操作可以成功提交</p>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">1. </span>设置保存点</span><br><span class="line"><span class="code">		savepoint 保存点名;</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="bullet">2. </span>回滚到保存点</span><br><span class="line"><span class="code">		rollback to 保存点名;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<blockquote>
-<p>场景：5个小姐姐，如果前二个成功扣款了设置保存点，保证前二位能够上门服务….</p>
-</blockquote>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 1.开启事务</span></span><br><span class="line">	<span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">-- 2.扣钱一次（凤姐）</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line"><span class="comment">-- 3.扣钱二次（芙蓉姐姐）</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line"><span class="comment">-- 4.设置一个保存点</span></span><br><span class="line">	<span class="keyword">savepoint</span> ol;</span><br><span class="line"><span class="comment">-- 5.扣钱三次（石榴姐）</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line"><span class="comment">-- 6.机器故障</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 7.回滚点保存点</span></span><br><span class="line">	<span class="keyword">rollback</span> <span class="keyword">to</span> ol;</span><br><span class="line"><span class="comment">-- 8.提交事务</span></span><br><span class="line">	<span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-
-<h2 id="5-事务特性-ACID【面试题】"><a href="#5-事务特性-ACID【面试题】" class="headerlink" title="5. 事务特性 ACID【面试题】"></a>5. 事务特性 ACID【面试题】</h2><figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">1. </span>原子性：A atomicity</span><br><span class="line"><span class="code">		如果一个包含多个步骤的业务操作，被事务管理，那么这些操作要么同时成功，要么同时失败。</span></span><br><span class="line"><span class="code">		假如我们有个方法中对一个属性进行了N次的更新，但是执行到一半的时候有一个语句有问题出现了异常，这样就可能使得我们上面所说的操作后的点与我们预先的点不同，这不是我们想要的，所以原子性要求你这个方法要么全部执行成功，要么你就别执行。</span></span><br><span class="line"><span class="bullet">2. </span>一致性：C consistency</span><br><span class="line"><span class="code">		事务在执行前后，保证数据的一致性</span></span><br><span class="line"><span class="code">		原子性中规定方法中的操作都执行或者都不执行，但并没有说要所有操作一起执行（一起更新那就乱套了，要哪个结果？），所以操作的执行也是有先后顺序的，那我们要是在执行一半时查询了数据库，那我们会得到中间的更新的属性？答案是不会的，一致性规定事务提交前后只存在两个状态，提交前的状态和提交后的状态，绝对不会出现中间的状态。</span></span><br><span class="line"><span class="bullet">3. </span>隔离性：I isolation【重点】</span><br><span class="line"><span class="code">		多个事务之间，相互独立，互不干扰....</span></span><br><span class="line"><span class="code">		事务的隔离性基于原子性和一致性，每一个事务可以并发执行，但是他们互不干扰，但是也有可能不同的事务会操作同一个资源，这个时候为了保持隔离性会用到锁方案。</span></span><br><span class="line"><span class="bullet">4. </span>持久性：D durability</span><br><span class="line"><span class="code">		事务一旦成功提交，保存到磁盘文件，不可逆....</span></span><br><span class="line"><span class="code">		当一个事务提交了之后那这个数据库状态就发生了改变，哪怕是提交后刚写入一半数据到数据库中，数据库宕机(死机)了，那当你下次重启的时候数据库也会根据提交日志进行回滚，最终将全部的数据写入。</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="6-事务隔离性"><a href="#6-事务隔离性" class="headerlink" title="6. 事务隔离性"></a>6. 事务隔离性</h2><p>​    多个事务之间隔离的，相互独立的。但是如果多个事务操作同一批数据，则会引发一些问题，设置不同的隔离级别就可以解决这些问题。</p>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">1. </span>脏读【必须要避免的....】</span><br><span class="line"><span class="code">		一个事务中，读取到另一个事务，未提交的数据</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="bullet">2. </span>不可重复读</span><br><span class="line"><span class="code">		一个事务中，二次读取的内容不一致，另外一个事务做了update操作</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">3. </span>幻读</span><br><span class="line"><span class="code">		一个事务中，二次读取的数量不一致，另外一个事务做了insert、delete操作</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="6-1-MySQL数据库隔离级别"><a href="#6-1-MySQL数据库隔离级别" class="headerlink" title="6.1 MySQL数据库隔离级别"></a>6.1 MySQL数据库隔离级别</h3><table>
-<thead>
-<tr>
-<th>级别</th>
-<th>名字</th>
-<th>隔离级别</th>
-<th>脏读</th>
-<th>不可重复读</th>
-<th>幻读</th>
-<th>数据库默认隔离级别</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>1</td>
-<td>读未提交</td>
-<td>read uncommitted</td>
-<td>是</td>
-<td>是</td>
-<td>是</td>
-<td></td>
-</tr>
-<tr>
-<td>2</td>
-<td>读已提交</td>
-<td>read committed</td>
-<td>否</td>
-<td>是</td>
-<td>是</td>
-<td>Oracle和SQL Server</td>
-</tr>
-<tr>
-<td>3</td>
-<td>可重复读</td>
-<td>repeatable read</td>
-<td>否</td>
-<td>否</td>
-<td>是</td>
-<td>MySQL</td>
-</tr>
-<tr>
-<td>4</td>
-<td>串行化</td>
-<td>serializable</td>
-<td>否</td>
-<td>否</td>
-<td>否</td>
-<td></td>
-</tr>
-</tbody></table>
-<p>性能角度：1&gt;2&gt;3&gt;4</p>
-<p>安全角度：4&gt;3&gt;2&gt;1</p>
-<p>综合考虑：2 or 3</p>
-<h3 id="6-2-演示隔离级别产生的问题【课上听一听】"><a href="#6-2-演示隔离级别产生的问题【课上听一听】" class="headerlink" title="6.2 演示隔离级别产生的问题【课上听一听】"></a>6.2 演示隔离级别产生的问题【课上听一听】</h3><figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">1. </span>查看当前数据库隔离级别</span><br><span class="line"><span class="code">		show variables like '%isolation%';</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="bullet">2. </span>临时修改隔离级别</span><br><span class="line"><span class="code">		set session transaction isolation level 级别字符串;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p>准备模拟二个事务窗口：A窗口、B窗口</p>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">1. </span>演示脏读</span><br><span class="line"><span class="code">	设置数据库隔离级别 read uncommitted;</span></span><br><span class="line"><span class="code">		set session transaction isolation level read uncommitted;</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="/2020/05/05/MySql-affair/1588574979356.png" alt="1588574979356"> </p>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">2. </span>解决脏读问题（引出：不可重复读问题）</span><br><span class="line"><span class="code">	设置数据库隔离级别 read committed;</span></span><br><span class="line"><span class="code">		set session transaction isolation level read committed;</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="/2020/05/05/MySql-affair/1588575246485.png" alt="1588575246485"> </p>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">3. </span>解决不可重复读问题（出现幻读问题）</span><br><span class="line"><span class="code">	设置数据库隔离级别 repeatable read;</span></span><br><span class="line"><span class="code">		set session transaction isolation level repeatable read;</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="/2020/05/05/MySql-affair/1588575464733.png" alt="1588575464733"> </p>
-<p><img src="/2020/05/05/MySql-affair/1588575751527.png" alt="1588575751527"> </p>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">4. </span>解决幻读问题</span><br><span class="line"><span class="code">	设置数据库隔离级别 serializable;</span></span><br><span class="line"><span class="code">		set session transaction isolation level serializable;</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="/2020/05/05/MySql-affair/1588575900641.png" alt="1588575900641"></p>
-]]></content>
-      <categories>
-        <category>MySQL</category>
-      </categories>
-      <tags>
-        <tag>面试题</tag>
       </tags>
   </entry>
   <entry>
@@ -630,6 +319,329 @@
       </tags>
   </entry>
   <entry>
+    <title>Mysql</title>
+    <url>/2020/04/29/MySQL_1/</url>
+    <content><![CDATA[<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">哈哈哈你说是什么</span><br></pre></td></tr></table></figure>
+]]></content>
+  </entry>
+  <entry>
+    <title>数据库事务</title>
+    <url>/2020/05/05/MySql-affair/</url>
+    <content><![CDATA[<h1 id="事务安全-TCL【理解】"><a href="#事务安全-TCL【理解】" class="headerlink" title="事务安全 TCL【理解】"></a>事务安全 TCL【理解】</h1><h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h2><p>如果一个包含多个步骤的业务操作，被事务管理，那么这些操作要么同时成功，要么同时失败。</p>
+<p>应用场景：用户转账</p>
+<p><strong>准备数据</strong></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 创建库</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> day21_pro;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 使用库</span></span><br><span class="line"><span class="keyword">use</span> day21_pro;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 创建数据表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="keyword">account</span> (  <span class="comment">-- 账户表</span></span><br><span class="line">	<span class="keyword">id</span> <span class="built_in">INT</span> PRIMARY <span class="keyword">KEY</span> AUTO_INCREMENT,</span><br><span class="line">	<span class="string">`name`</span> <span class="built_in">VARCHAR</span>(<span class="number">32</span>),</span><br><span class="line">	money <span class="keyword">DOUBLE</span> </span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 添加数据</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">account</span> (<span class="string">`name`</span>, money) <span class="keyword">VALUES</span> (<span class="string">'蝴蝶姐'</span>, <span class="number">1000</span>), (<span class="string">'罗志祥'</span>, <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>模拟转账</strong></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 扣钱（转出）</span></span><br><span class="line"><span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 机器故障了</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 加强（转入）</span></span><br><span class="line"><span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money + <span class="number">100</span> <span class="keyword">WHERE</span> <span class="keyword">id</span> = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-操作事务【掌握】"><a href="#2-操作事务【掌握】" class="headerlink" title="2. 操作事务【掌握】"></a>2. 操作事务【掌握】</h2><h3 id="2-1-手动提交事务【手动操作mysql使用方案】"><a href="#2-1-手动提交事务【手动操作mysql使用方案】" class="headerlink" title="2.1 手动提交事务【手动操作mysql使用方案】"></a>2.1 手动提交事务【手动操作mysql使用方案】</h3><figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">1. </span>开启事务</span><br><span class="line"><span class="code">		begin</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="bullet">2. </span>提交事务</span><br><span class="line"><span class="code">		commit</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="bullet">3. </span>回滚事务</span><br><span class="line"><span class="code">		rollback</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/05/05/MySql-affair/1588563849352.png" alt="1588563849352"> </p>
+<p><strong>转账成功</strong></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 1. 开启事务</span></span><br><span class="line">	<span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">-- 2. 扣钱</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line"><span class="comment">-- 3. 加钱</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money + <span class="number">100</span> <span class="keyword">WHERE</span> <span class="keyword">id</span> = <span class="number">1</span>;</span><br><span class="line"><span class="comment">-- 4. 提交事务</span></span><br><span class="line">	<span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><strong>转账失败</strong></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 1.开启事务</span></span><br><span class="line">	<span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">-- 2.扣钱</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line"><span class="comment">-- 3.机器故障</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 4.回滚事务</span></span><br><span class="line">	<span class="keyword">rollback</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h3 id="2-2-自动提交事务【在JDBC将自动提交关闭】"><a href="#2-2-自动提交事务【在JDBC将自动提交关闭】" class="headerlink" title="2.2 自动提交事务【在JDBC将自动提交关闭】"></a>2.2 自动提交事务【在JDBC将自动提交关闭】</h3><figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">* </span>默认情况下，在MySQL中每一条DML（增删改）语句，就是一个独立的事务</span><br><span class="line"></span><br><span class="line"><span class="bullet">* </span>查看MySQL是否开启自动提交</span><br><span class="line"><span class="code">		show variables like 'autocommit';</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="bullet">* </span>临时关闭自动提交（手动）</span><br><span class="line"><span class="code">		set autocommit=off;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>模拟转账</strong></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 1.扣钱</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line">	</span><br><span class="line"><span class="comment">-- 2.改为手动提交/回滚</span></span><br><span class="line">	<span class="keyword">commit</span> / <span class="keyword">rollback</span> ;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="3-事务工作原理"><a href="#3-事务工作原理" class="headerlink" title="3. 事务工作原理"></a>3. 事务工作原理</h2><p><strong>注意：</strong></p>
+<blockquote>
+<p>在同一个事务中，出现bug（异常），必须执行rollback命令，不然会影响同一个事务中下一次提交</p>
+</blockquote>
+<p><img src="/2020/05/05/MySql-affair/1588565465224.png" alt="1588565465224"> </p>
+<h2 id="4-保存（回滚）点【了解】"><a href="#4-保存（回滚）点【了解】" class="headerlink" title="4. 保存（回滚）点【了解】"></a>4. 保存（回滚）点【了解】</h2><p>​    当事务开启后，一部分sql执行成功，添加一个保存点，后续操作报错了，回滚到保存点，保证之前的操作可以成功提交</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">1. </span>设置保存点</span><br><span class="line"><span class="code">		savepoint 保存点名;</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="bullet">2. </span>回滚到保存点</span><br><span class="line"><span class="code">		rollback to 保存点名;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>场景：5个小姐姐，如果前二个成功扣款了设置保存点，保证前二位能够上门服务….</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 1.开启事务</span></span><br><span class="line">	<span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">-- 2.扣钱一次（凤姐）</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line"><span class="comment">-- 3.扣钱二次（芙蓉姐姐）</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line"><span class="comment">-- 4.设置一个保存点</span></span><br><span class="line">	<span class="keyword">savepoint</span> ol;</span><br><span class="line"><span class="comment">-- 5.扣钱三次（石榴姐）</span></span><br><span class="line">	<span class="keyword">UPDATE</span> <span class="keyword">account</span> <span class="keyword">SET</span> money = money <span class="number">-100</span> <span class="keyword">WHERE</span>  <span class="keyword">id</span> = <span class="number">2</span>;</span><br><span class="line"><span class="comment">-- 6.机器故障</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 7.回滚点保存点</span></span><br><span class="line">	<span class="keyword">rollback</span> <span class="keyword">to</span> ol;</span><br><span class="line"><span class="comment">-- 8.提交事务</span></span><br><span class="line">	<span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="5-事务特性-ACID【面试题】"><a href="#5-事务特性-ACID【面试题】" class="headerlink" title="5. 事务特性 ACID【面试题】"></a>5. 事务特性 ACID【面试题】</h2><figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">1. </span>原子性：A atomicity</span><br><span class="line"><span class="code">		如果一个包含多个步骤的业务操作，被事务管理，那么这些操作要么同时成功，要么同时失败。</span></span><br><span class="line"><span class="code">		假如我们有个方法中对一个属性进行了N次的更新，但是执行到一半的时候有一个语句有问题出现了异常，这样就可能使得我们上面所说的操作后的点与我们预先的点不同，这不是我们想要的，所以原子性要求你这个方法要么全部执行成功，要么你就别执行。</span></span><br><span class="line"><span class="bullet">2. </span>一致性：C consistency</span><br><span class="line"><span class="code">		事务在执行前后，保证数据的一致性</span></span><br><span class="line"><span class="code">		原子性中规定方法中的操作都执行或者都不执行，但并没有说要所有操作一起执行（一起更新那就乱套了，要哪个结果？），所以操作的执行也是有先后顺序的，那我们要是在执行一半时查询了数据库，那我们会得到中间的更新的属性？答案是不会的，一致性规定事务提交前后只存在两个状态，提交前的状态和提交后的状态，绝对不会出现中间的状态。</span></span><br><span class="line"><span class="bullet">3. </span>隔离性：I isolation【重点】</span><br><span class="line"><span class="code">		多个事务之间，相互独立，互不干扰....</span></span><br><span class="line"><span class="code">		事务的隔离性基于原子性和一致性，每一个事务可以并发执行，但是他们互不干扰，但是也有可能不同的事务会操作同一个资源，这个时候为了保持隔离性会用到锁方案。</span></span><br><span class="line"><span class="bullet">4. </span>持久性：D durability</span><br><span class="line"><span class="code">		事务一旦成功提交，保存到磁盘文件，不可逆....</span></span><br><span class="line"><span class="code">		当一个事务提交了之后那这个数据库状态就发生了改变，哪怕是提交后刚写入一半数据到数据库中，数据库宕机(死机)了，那当你下次重启的时候数据库也会根据提交日志进行回滚，最终将全部的数据写入。</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="6-事务隔离性"><a href="#6-事务隔离性" class="headerlink" title="6. 事务隔离性"></a>6. 事务隔离性</h2><p>​    多个事务之间隔离的，相互独立的。但是如果多个事务操作同一批数据，则会引发一些问题，设置不同的隔离级别就可以解决这些问题。</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">1. </span>脏读【必须要避免的....】</span><br><span class="line"><span class="code">		一个事务中，读取到另一个事务，未提交的数据</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="bullet">2. </span>不可重复读</span><br><span class="line"><span class="code">		一个事务中，二次读取的内容不一致，另外一个事务做了update操作</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">3. </span>幻读</span><br><span class="line"><span class="code">		一个事务中，二次读取的数量不一致，另外一个事务做了insert、delete操作</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="6-1-MySQL数据库隔离级别"><a href="#6-1-MySQL数据库隔离级别" class="headerlink" title="6.1 MySQL数据库隔离级别"></a>6.1 MySQL数据库隔离级别</h3><table>
+<thead>
+<tr>
+<th>级别</th>
+<th>名字</th>
+<th>隔离级别</th>
+<th>脏读</th>
+<th>不可重复读</th>
+<th>幻读</th>
+<th>数据库默认隔离级别</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>读未提交</td>
+<td>read uncommitted</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>读已提交</td>
+<td>read committed</td>
+<td>否</td>
+<td>是</td>
+<td>是</td>
+<td>Oracle和SQL Server</td>
+</tr>
+<tr>
+<td>3</td>
+<td>可重复读</td>
+<td>repeatable read</td>
+<td>否</td>
+<td>否</td>
+<td>是</td>
+<td>MySQL</td>
+</tr>
+<tr>
+<td>4</td>
+<td>串行化</td>
+<td>serializable</td>
+<td>否</td>
+<td>否</td>
+<td>否</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>性能角度：1&gt;2&gt;3&gt;4</p>
+<p>安全角度：4&gt;3&gt;2&gt;1</p>
+<p>综合考虑：2 or 3</p>
+<h3 id="6-2-演示隔离级别产生的问题【课上听一听】"><a href="#6-2-演示隔离级别产生的问题【课上听一听】" class="headerlink" title="6.2 演示隔离级别产生的问题【课上听一听】"></a>6.2 演示隔离级别产生的问题【课上听一听】</h3><figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">1. </span>查看当前数据库隔离级别</span><br><span class="line"><span class="code">		show variables like '%isolation%';</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="bullet">2. </span>临时修改隔离级别</span><br><span class="line"><span class="code">		set session transaction isolation level 级别字符串;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>准备模拟二个事务窗口：A窗口、B窗口</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">1. </span>演示脏读</span><br><span class="line"><span class="code">	设置数据库隔离级别 read uncommitted;</span></span><br><span class="line"><span class="code">		set session transaction isolation level read uncommitted;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/05/05/MySql-affair/1588574979356.png" alt="1588574979356"> </p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">2. </span>解决脏读问题（引出：不可重复读问题）</span><br><span class="line"><span class="code">	设置数据库隔离级别 read committed;</span></span><br><span class="line"><span class="code">		set session transaction isolation level read committed;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/05/05/MySql-affair/1588575246485.png" alt="1588575246485"> </p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">3. </span>解决不可重复读问题（出现幻读问题）</span><br><span class="line"><span class="code">	设置数据库隔离级别 repeatable read;</span></span><br><span class="line"><span class="code">		set session transaction isolation level repeatable read;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/05/05/MySql-affair/1588575464733.png" alt="1588575464733"> </p>
+<p><img src="/2020/05/05/MySql-affair/1588575751527.png" alt="1588575751527"> </p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">4. </span>解决幻读问题</span><br><span class="line"><span class="code">	设置数据库隔离级别 serializable;</span></span><br><span class="line"><span class="code">		set session transaction isolation level serializable;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/05/05/MySql-affair/1588575900641.png" alt="1588575900641"></p>
+]]></content>
+      <categories>
+        <category>MySQL</category>
+      </categories>
+      <tags>
+        <tag>面试题</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MySql索引</title>
+    <url>/2020/05/05/MySql-index/</url>
+    <content><![CDATA[<h1 id="一、MySql索引"><a href="#一、MySql索引" class="headerlink" title="一、MySql索引"></a>一、MySql索引</h1><h3 id="1-1-索引是什么"><a href="#1-1-索引是什么" class="headerlink" title="1.1 索引是什么"></a>1.1 索引是什么</h3><ul>
+<li><p>索引是帮助MySql高效获取数据的排好序的数据结构</p>
+<ul>
+<li><p>在没有索引的时候是磁盘寻址,查询数据的时候是一个一个查找,在大数据查找时候会 很慢.</p>
+</li>
+<li><p>为了加快查找效率,可以维护一个二叉查找树,每个节点分别包含索引键值和一个指向对相应数据记录物理地址的指针,这样就可以运用二叉树快速获取到响应数据</p>
+<p><img src="/2020/05/05/MySql-index/1588682327851.png" alt="地址对应图"></p>
+</li>
+</ul>
+</li>
+<li><p>索引数据结构</p>
+<ul>
+<li><p>二叉树</p>
+<ul>
+<li><p>如果数据自增的话,二叉树就变成链表了,高度会无限增高,查询效果会跟链表相似</p>
+<p><img src="/2020/05/05/MySql-index/1588682428194.png" alt="二叉树"></p>
+</li>
+</ul>
+</li>
+<li><p>红黑树</p>
+<ul>
+<li><p>特殊的二叉树,简称二叉平衡树,高度还是不确定</p>
+<p><img src="/2020/05/05/MySql-index/1588682762187.png" alt="1588682762187"></p>
+</li>
+</ul>
+</li>
+<li><p>BTree</p>
+<ul>
+<li><p>多路平衡搜索树</p>
+</li>
+<li><p>叶节点具有相同深度,叶节点的指针为空</p>
+</li>
+<li><p>所有索引元素不重复</p>
+</li>
+<li><p>节点中的数据索引从左到右递增排列</p>
+<p><img src="/2020/05/05/MySql-index/1588684097046.png" alt="bshu"></p>
+</li>
+</ul>
+</li>
+<li><p>B+Tree</p>
+<ul>
+<li><p>优化BTree（非叶子节点：索引+指针、叶子节点：索引+数据【地址】）</p>
+</li>
+<li><p>非叶子节点不存储data,只存储索引(冗余),可以放更多的索引</p>
+</li>
+<li><p>叶子节点包含所有索引字段</p>
+</li>
+<li><p>叶子节点使用指针来凝结,提高区间访问的性能,</p>
+</li>
+<li><p>相当于一个双向列表.</p>
+<p><img src="/2020/05/05/MySql-index/1588690612854.png" alt="1588690612854"></p>
+</li>
+</ul>
+</li>
+<li><p>Hash:做哈希运算,得到散列值,再从中快速定位所需要的数据.一一映射.,只需要进行一次哈希运算就可以快速定位,所以查找速度非常快,哈希之对于精确查找,对于范围查找不行,因为有范围,不好算哈希值.</p>
+<ul>
+<li>MD5就是一种哈希算法</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="1-2-mysql中的b-true"><a href="#1-2-mysql中的b-true" class="headerlink" title="1.2 mysql中的b+true"></a>1.2 mysql中的b+true</h2><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 查看mysql索引节点大小</span></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> <span class="keyword">status</span> <span class="keyword">like</span> <span class="string">'innodb_page_size'</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/05/05/MySql-index/1588684786033.png" alt="1588684786033"></p>
+<h2 id="2-1-MySQL索引分类"><a href="#2-1-MySQL索引分类" class="headerlink" title="2.1 MySQL索引分类"></a>2.1 MySQL索引分类</h2><figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">* </span>主键（约束）索引</span><br><span class="line"><span class="code">		主键约束+提高查询效率</span></span><br><span class="line"><span class="code">		</span></span><br><span class="line"><span class="bullet">* </span>唯一（约束）索引</span><br><span class="line"><span class="code">		唯一约束+提高查询效率</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">* </span>普通索引</span><br><span class="line"><span class="code">		仅提高查询效率</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">* </span>组合（联合）索引</span><br><span class="line"><span class="code">		多个字段组成索引</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">* </span>全文索引</span><br><span class="line"><span class="code">		solr、es</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">* </span>hash索引</span><br><span class="line"><span class="code">		根据key-value 效率非常高</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-2-MySQL索引语法"><a href="#2-2-MySQL索引语法" class="headerlink" title="2.2 MySQL索引语法"></a>2.2 MySQL索引语法</h2><h3 id="2-2-1-创建索引"><a href="#2-2-1-创建索引" class="headerlink" title="2.2.1 创建索引"></a>2.2.1 创建索引</h3><h4 id="①-直接创建【了解】"><a href="#①-直接创建【了解】" class="headerlink" title="① 直接创建【了解】"></a>① 直接创建【了解】</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 创建普通索引</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">index</span> 索引名 <span class="keyword">on</span> 表名(字段);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 创建唯一索引</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">unique</span> <span class="keyword">index</span> 索引名 <span class="keyword">on</span> 表名(字段);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 创建普通组合索引</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">index</span> 索引名 <span class="keyword">on</span> 表名(字段<span class="number">1</span>,字段<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 创建唯一组合索引</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">unique</span> <span class="keyword">index</span> 索引名 <span class="keyword">on</span> 表名(字段<span class="number">1</span>,字段<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 创建学生表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> student(</span><br><span class="line"> <span class="keyword">id</span> <span class="built_in">INT</span>,</span><br><span class="line"> <span class="string">`name`</span> <span class="built_in">VARCHAR</span>(<span class="number">32</span>),</span><br><span class="line"> telephone <span class="built_in">VARCHAR</span>(<span class="number">11</span>)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- name字段适合设置什么索引？</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> name_idx <span class="keyword">ON</span> student(<span class="string">`name`</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- telephone适合设置什么索引？</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">UNIQUE</span> <span class="keyword">INDEX</span> telephone_uni_idx <span class="keyword">ON</span> student(telephone);</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="②-修改表时指定【了解】"><a href="#②-修改表时指定【了解】" class="headerlink" title="② 修改表时指定【了解】"></a>② 修改表时指定【了解】</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 添加一个主键，这意味着索引值必须是唯一的，且不能为NULL</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> 表名 <span class="keyword">add</span> primary <span class="keyword">key</span>(字段);  <span class="comment">--默认索引名：primary</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 添加唯一索引（除了NULL外，NULL可能会出现多次）</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> 表名 <span class="keyword">add</span> <span class="keyword">unique</span>(字段); <span class="comment">-- 默认索引名：字段名</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 添加普通索引，索引值可以出现多次。</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> 表名 <span class="keyword">add</span> <span class="keyword">index</span>(字段); <span class="comment">-- 默认索引名：字段名</span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 指定id为主键索引</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> student <span class="keyword">ADD</span> PRIMARY <span class="keyword">KEY</span>(<span class="keyword">id</span>);</span><br><span class="line"><span class="comment">-- 指定name为普通索引</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> student <span class="keyword">ADD</span> <span class="keyword">INDEX</span>(<span class="string">`name`</span>);</span><br><span class="line"><span class="comment">-- 指定telephone为唯一索引</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> student <span class="keyword">ADD</span> <span class="keyword">UNIQUE</span>(telephone);</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="③-创建表时指定【掌握】"><a href="#③-创建表时指定【掌握】" class="headerlink" title="③ 创建表时指定【掌握】"></a>③ 创建表时指定【掌握】</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 创建教师表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> teacher(</span><br><span class="line"> <span class="keyword">id</span> <span class="built_in">INT</span> PRIMARY <span class="keyword">KEY</span> AUTO_INCREMENT, <span class="comment">-- 主键索引</span></span><br><span class="line"> <span class="string">`name`</span> <span class="built_in">VARCHAR</span>(<span class="number">32</span>),</span><br><span class="line"> telephone <span class="built_in">VARCHAR</span>(<span class="number">11</span>) <span class="keyword">UNIQUE</span>, <span class="comment">-- 唯一索引</span></span><br><span class="line"> sex <span class="built_in">VARCHAR</span>(<span class="number">5</span>),</span><br><span class="line"> birthday <span class="built_in">DATE</span>,</span><br><span class="line"> <span class="keyword">INDEX</span>(<span class="string">`name`</span>) <span class="comment">-- 普通索引</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-3-1-删除索引"><a href="#2-3-1-删除索引" class="headerlink" title="2.3.1 删除索引"></a>2.3.1 删除索引</h2><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 直接删除</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">index</span> 索引名 <span class="keyword">on</span> 表名;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 修改表时删除 【掌握】</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> 表名 <span class="keyword">drop</span> <span class="keyword">index</span> 索引名;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 删除name普通索引</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">INDEX</span> name_idx <span class="keyword">ON</span> student;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 删除telephone唯一索引</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> student <span class="keyword">DROP</span> <span class="keyword">INDEX</span> telephone_uni_idx;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-4-索引的优缺点"><a href="#2-4-索引的优缺点" class="headerlink" title="2.4 索引的优缺点"></a>2.4 索引的优缺点</h2><figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">* </span>优点</span><br><span class="line"><span class="code">		减少磁盘IO，提高查询效率</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">* </span>缺点</span><br><span class="line"><span class="code">		索引占用磁盘空间</span></span><br><span class="line"><span class="code">		我们在进行增删改时，索引的维护会增加成本，可能会降低服务器性能</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-5-索引创建原则"><a href="#2-5-索引创建原则" class="headerlink" title="2.5 索引创建原则"></a>2.5 索引创建原则</h2><figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"><span class="bullet">1. </span>字段内容可识别度不能低于70%</span><br><span class="line"></span><br><span class="line"><span class="bullet">2. </span>经常使用where条件搜索的字段</span><br><span class="line"></span><br><span class="line"><span class="bullet">3. </span>经常使用表连接的字段（内连接、外连接）</span><br><span class="line"></span><br><span class="line"><span class="bullet">4. </span>经常排序的字段 order by</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="bullet">* </span>注意：索引本身会占用磁盘空间，不是所有的字段都适合增加索引....</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="2-6-常见索引失效情况"><a href="#2-6-常见索引失效情况" class="headerlink" title="2.6 常见索引失效情况"></a>2.6 常见索引失效情况</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 1.使用like模糊匹配，%通配符在最左侧使用时</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> email <span class="keyword">like</span> <span class="string">'%jack1234567%'</span>;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 2.尽量避免使用or，如果条件有一个没有索引，那么会进行全表扫描</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> <span class="keyword">id</span> = <span class="number">88</span> <span class="keyword">or</span> sex = <span class="string">'male'</span>;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 3.在索引列上进行计算</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span>  <span class="keyword">id</span>+<span class="number">1</span> = <span class="number">88</span>;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 4.使用 !=、 not in、is not null时</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> username != <span class="string">'jack12'</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="二、MySql存储引擎"><a href="#二、MySql存储引擎" class="headerlink" title="二、MySql存储引擎"></a>二、MySql存储引擎</h1><p>MySQL存储引擎的不同，那么索引文件保存的方式也有所不同，常见的有二种存储引擎<strong>MyISAM</strong>和<strong>InnoDB</strong>。</p>
+<h3 id="根节点常驻内存"><a href="#根节点常驻内存" class="headerlink" title="根节点常驻内存"></a>根节点常驻内存</h3><h2 id="2-1-MyISAM（非聚集索引）"><a href="#2-1-MyISAM（非聚集索引）" class="headerlink" title="2.1 MyISAM（非聚集索引）"></a>2.1 MyISAM（非聚集索引）</h2><p>MySQL5.5版本之前默认存储引擎</p>
+<blockquote>
+<p>特点：不支持事务、不支持外键约束</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">DATABASE</span> day22_pro;</span><br><span class="line"><span class="keyword">USE</span> day22_pro;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 创建 myisam存储引擎表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> tab_myisam(</span><br><span class="line"> <span class="keyword">id</span> <span class="built_in">INT</span>,</span><br><span class="line"> <span class="string">`name`</span> <span class="built_in">VARCHAR</span>(<span class="number">32</span>)</span><br><span class="line">)<span class="keyword">ENGINE</span>=MYISAM;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/05/05/MySql-index/1588685216737.png" alt="1588685216737"></p>
+<h2 id="2-2-InnoDB（聚集索引）"><a href="#2-2-InnoDB（聚集索引）" class="headerlink" title="2.2 InnoDB（聚集索引）"></a>2.2 InnoDB（聚集索引）</h2><ul>
+<li><p>innoDB索引实现(聚集)</p>
+<ul>
+<li><p>表数据文件按照T+TREE组织的一个索引结构文件</p>
+</li>
+<li><p>聚集索引-叶节点包含了完整的数据巨鹿</p>
+</li>
+<li><p>为什么innoDB表必须有主键,并且推荐使用整型的自增主键,</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">没有主键的话,mysql会默认选择一列唯一的作为主键,或者自动给添加一列主键用来维护你的数据库,在后台存在,是看不到的.</span><br><span class="line">因为在查找中有大量的比较操作,</span><br><span class="line">	1.比较问题:</span><br><span class="line">		如果是整型的话,相对好比较,如果是uuid的话,则在比较的时候还会降低性能.</span><br><span class="line">	2.内存问题:</span><br><span class="line">		整型相比较,字符串占用字节少,节约空间.</span><br><span class="line">	3.为什么自增</span><br><span class="line">    	每个节点的都是从左到右递增的,大节点和大节点也是从左到右递增的,如果不是自增,不好维护,容易产生分裂和树平衡,影响效率,消耗时间.</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>为什么非主键索引结构叶子节点存储的是主键值?(一致性和节省存储空间)</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line"> </span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ul>
+<p>MySQL5.5版本之后默认存储引擎</p>
+<blockquote>
+<p>特点：支持事务、支持外键约束</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 创建 innodb存储引擎表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> tab_innodb(</span><br><span class="line"> <span class="keyword">id</span> <span class="built_in">INT</span>,</span><br><span class="line"> <span class="string">`name`</span> <span class="built_in">VARCHAR</span>(<span class="number">32</span>)</span><br><span class="line">)<span class="keyword">ENGINE</span> = <span class="keyword">INNODB</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/05/05/MySql-index/1588685238401.png" alt="1588685238401"></p>
+]]></content>
+      <categories>
+        <category>MySQL</category>
+      </categories>
+      <tags>
+        <tag>面试题</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Photo</title>
+    <url>/2020/04/28/Photo/</url>
+    <content><![CDATA[<p><img src="/2020/04/28/Photo/header-1588232948775.jpg" alt="图片"></p>
+]]></content>
+  </entry>
+  <entry>
     <title>MySql性能</title>
     <url>/2020/05/05/MySql-property/</url>
     <content><![CDATA[<h1 id="一-MySQL性能"><a href="#一-MySQL性能" class="headerlink" title="一 MySQL性能"></a>一 MySQL性能</h1><h2 id="1-1-分析-数据库查询效率低下"><a href="#1-1-分析-数据库查询效率低下" class="headerlink" title="1.1 分析-数据库查询效率低下"></a>1.1 分析-数据库查询效率低下</h2><p>​    我们进入公司进行项目开发往往关注的是业务需求和功能的实现，但是随着项目运行的时间增加，数据量也就增加了，这时会影响到我们数据库的查询性能</p>
@@ -668,11 +680,5 @@
       <tags>
         <tag>面试题</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Photo</title>
-    <url>/2020/04/28/Photo/</url>
-    <content><![CDATA[<p><img src="/2020/04/28/Photo/header-1588232948775.jpg" alt="图片"></p>
-]]></content>
   </entry>
 </search>
